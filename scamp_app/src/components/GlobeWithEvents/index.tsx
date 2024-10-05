@@ -1,6 +1,5 @@
 import React from 'react';
 import Globe from 'react-globe.gl';
-
 import ResizableContainer from "../ResizeableContainer";
 
 type GlobeTypes = 'moon' | 'mars';
@@ -15,17 +14,16 @@ const GlobeWithEvents: React.FC<Props> = ({
   message,
   ...props
 }) => {
-  return <div {...props}>
-    <h2>{type}</h2>
-    <ResizableContainer render={( width, height) => (
+  return <ResizableContainer {...props} render={( width, height) => (
+    <div>
+      <h2>{type}</h2>
       <Globe
         globeImageUrl="//unpkg.com/globe.gl@2.27.2/example/moon-landing-sites/lunar_surface.jpg"
         width={width}
         height={height}
       />
-    )}
-    />
-  </div>;
+    </div>
+  )}/>
 };
 
 export default GlobeWithEvents;
