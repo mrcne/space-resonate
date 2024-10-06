@@ -1,1 +1,93 @@
+# Import required libraries
+import numpy as np
+import pandas as pd
+from obspy import read
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+import os
+cat_directory = '/content/drive/My Drive/ColabSpaceApps2024/data/lunar/training/catalogs/apollo12_catalog_GradeA_final.csv'   #shared-with-me/NASA 2024 Space Apps Challenge Seismic/ColabSpaceApps2024/
+#cat_file = cat_directory + 'apollo12_catalog_GradeA_final.csv'
+cat = pd.read_csv(cat_directory)
+#Now doing filtering for the 76 csv files
+import numpy as np
+import pandas as pd
+import pywt
+import matplotlib.pyplot as plt
+import csv
+for i in range(70,71):
+  print('i is', i)
+  row = cat.iloc[i] #was 6
+  arrival_time = datetime.strptime(row['time_abs(%Y-%m-%dT%H:%M:%S.%f)'],'%Y-%m-%dT%H:%M:%S.%f')
+  arrival_time
+  # If we want the value of relative time, we don't need to use datetime
+  arrival_time_rel = row['time_rel(sec)']
+  arrival_time_rel
+  # Let's also get the name of the file
+  test_filename = row.filename
+  test_filename
+  data_directory = '/content/drive/My Drive/ColabSpaceApps2024/data/lunar/training/data/S12_GradeA/'
+  csv_file = f'{data_directory}{test_filename}.csv'
+  data_cat = pd.read_csv(csv_file)
+  data_cat
+  print(data_cat.columns)
+  # Read in time steps and velocities
+  csv_times = np.array(data_cat['time_rel(sec)'].tolist())
+  csv_data = np.array(data_cat['velocity(m/s)'].tolist())
+  csv_abs_time = np.array(data_cat['time_abs(%Y-%m-%dT%H:%M:%S.%f)'].tolist())
 
+  ##############################
+  # Extract time and amplitude from the CSV
+  time = csv_times #data['Time'].values
+  amplitude = csv_data #data['Amplitude'].values
+
+
+  # Set the wavelet parameters
+  wavelet = 'db4'  # Daubechies wavelet, other than 'haar', 'sym4', etc.
+  max_level = 6  # Decomposition level, +-
+
+  # Perform wavelet decomposition
+  coeffs = pywt.wavedec(amplitude, wavelet, level=max_level)
+
+  # Define a custom threshold for each decomposition level
+  # You can adjust this logic to apply different thresholds to different levels
+  thresholds = []
+  for i in range(1, len(coeffs)):
+      # This is the noise standard deviation estimation based on detail coefficients
+      sigma = np.median(np.abs(coeffs[i])) / 0.6745
+      threshold = sigma * np.sqrt(2 * np.log(len(amplitude)))  # Universal threshold
+      thresholds.append(threshold)
+
+  # Apply thresholding to denoise the signal
+  coeffs_thresholded = [coeffs[0]]  # Keep the approximation coefficients as-is
+  for i, c in enumerate(coeffs[1:], 1):
+      coeffs_thresholded.append(pywt.threshold(c, thresholds[i-1], mode='soft'))
+
+  # Reconstruct the filtered signal using the thresholded coefficients
+  filtered_amplitude = pywt.waverec(coeffs_thresholded, wavelet)
+  myFiltered = filtered_amplitude
+  if len(filtered_amplitude != len(csv_abs_time)):
+      myFiltered = filtered_amplitude[:-1]
+
+  #filtered_df = pd.DataFrame({
+  #            'time_abs': csv_abs_time,
+  #            'time_rel': time,
+  #            'velocity_filtered(m/s)': myFiltered 
+  #        })
+
+  # Save the filtered DataFrame to the output folder with the same file name
+  
+  output_file_path = os.path.join('/content/drive/My Drive/ColabSpaceApps2024/Lunar_training_wavelet_output/', test_filename)
+  output_file_path = output_file_path + '.csv' 
+  #filtered_df.to_csv(output_file_path, index=False)
+  # Open the CSV file for writing
+  with open(output_file_path, mode='w', newline='') as file:
+      writer = csv.writer(file)
+
+      # Write the header
+      writer.writerow(['time_abs', 'time_rel', 'velocity_filtered(m/s)'])
+
+      # Write the rows
+      for i in range(len(csv_times)):
+          writer.writerow([csv_abs_time[i], csv_times[i], filtered_amplitude[i]])
+
+  print(f"CSV file saved successfully at {output_file_path}")
