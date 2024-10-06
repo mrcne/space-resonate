@@ -12,7 +12,9 @@ import {
   VStack,
   Image,
   Tooltip,
-  FormLabel, Input,
+  FormLabel,
+  Input,
+  Button,
 } from "@chakra-ui/react";
 
 import {useSeismicSettings} from "../../context/seismicSettings.tsx";
