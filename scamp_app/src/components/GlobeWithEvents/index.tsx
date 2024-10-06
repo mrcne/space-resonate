@@ -1,16 +1,16 @@
 import React from 'react';
 import Globe from 'react-globe.gl';
-import ResizableContainer from "../ResizeableContainer";
 
-type GlobeTypes = 'moon' | 'mars';
+import {DataSetType} from "../../types/seismicSettings.ts";
+import ResizableContainer from "../ResizeableContainer";
 
 type Props = {
   message?: string;
-  type?: GlobeTypes;
+  type?: DataSetType;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 const GlobeWithEvents: React.FC<Props> = ({
-  type = 'moon',
+  type = 'lunar',
   message,
   ...props
 }) => {
@@ -21,6 +21,11 @@ const GlobeWithEvents: React.FC<Props> = ({
         globeImageUrl="//unpkg.com/globe.gl@2.27.2/example/moon-landing-sites/lunar_surface.jpg"
         width={width}
         height={height}
+        rendererConfig={{
+          antialias: false,
+          alpha: false,
+        }}
+        showAtmosphere={false}
       />
     </>
   )}/>
