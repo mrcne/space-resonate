@@ -9,12 +9,15 @@ import {
   Stack,
   StackDivider,
   useRadioGroup,
-  VStack
+  VStack,
+  Image
 } from "@chakra-ui/react";
 
 import {useSeismicSettings} from "../../context/seismicSettings.tsx";
 import {SeismicSettings} from "../../types/seismicSettings.ts";
 import RadioCard from "../RadioCard";
+
+import logo from '../../assets/logo_w.svg'
 
 const PanelMain: React.FC<BoxProps> = (props) => {
   const [value, setValue] = useState('1');
@@ -122,7 +125,14 @@ const PanelMain: React.FC<BoxProps> = (props) => {
       spacing={4}
       align='stretch'
     >
-      <Heading as="h1" size="lg">S.C.A.M.P</Heading>
+      <Box
+        display="flex"
+        alignItems="center"
+        gap="4"
+      >
+        <Image src={logo} alt="SCAMP" boxSize="60px" display="inline-block" />
+        <Heading as="h1" size="lg">S.C.A.M.P</Heading>
+      </Box>
       <HStack {...getRootProps()}>
         <RadioCard key="lunar" {...getRadioProps({ value: 'lunar' })}>Moon</RadioCard>
         <RadioCard key="mars" {...getRadioProps({ value: 'mars' })}>Mars</RadioCard>
