@@ -1,39 +1,58 @@
+import {Box, Image} from "@chakra-ui/react";
 import React, {useEffect, useMemo, useState} from 'react';
 import Globe from 'react-globe.gl';
+
+import {useSeismicSettings} from "../../context/seismicSettings.tsx";
 import {LandingSite} from "../../types/resources.ts";
 
-import {DataSetType} from "../../types/seismicSettings.ts";
 import ResizableContainer from "../ResizeableContainer";
 
-type Props = {
-  message?: string;
-  type?: DataSetType;
-} & React.HTMLAttributes<HTMLDivElement>;
+type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const GlobeWithEvents: React.FC<Props> = ({
-  type = 'lunar',
-  message,
   ...props
 }) => {
-    const [landingSites, setLandingSites] = useState<Record<string, LandingSite>>({});
+  const [landingSites, setLandingSites] = useState<Record<string, LandingSite>>({});
+  const {settings} = useSeismicSettings();
 
-    const currentStation = 'apollo-12'
+  const currentStation = 'apollo-12';
 
-    useEffect(() => {
-      fetch('./resources/stations.json')
-        .then(r =>r.json())
-        .then(setLandingSites);
-    }, []);
+  const globeSrcByType = {
+    'lunar': '//unpkg.com/globe.gl@2.27.2/example/moon-landing-sites/lunar_surface.jpg',
+    'mars': './assets/temp_mars_surface.jpg',
+    'pi': './assets/pi_image.jpg',
+    'custom': '',
+  }
+
+  useEffect(() => {
+    fetch('./assets/stations.json')
+      .then(r => r.json())
+      .then(setLandingSites);
+  }, []);
 
   const labelsData = useMemo(() => (
     [landingSites[currentStation]]
-  ) , [landingSites, currentStation]);
+  ), [landingSites, currentStation]);
 
-  return <ResizableContainer {...props} render={( width, height) => (
+  if (settings.dataSet === 'pi') {
+    return <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      {...props}
+    >
+      <Image
+        src={globeSrcByType['pi']}
+        alt="Pi image"
+        borderRadius="full"
+      />
+    </Box>
+  }
+
+  return <ResizableContainer {...props} render={(width, height) => (
     <>
-      <h2>{message}</h2>
       <Globe
-        globeImageUrl="//unpkg.com/globe.gl@2.27.2/example/moon-landing-sites/lunar_surface.jpg"
+        globeImageUrl={globeSrcByType[settings.dataSet] ?? globeSrcByType['lunar']}
         width={width}
         height={height}
         rendererConfig={{
