@@ -16,7 +16,7 @@ To keep things tidy we've organized our applications in several modules and gave
 
   Web Application to display dashboard of seismic data filtering
 
-- ... model
+- KFTSD (Kalman filtering Based Thresholding for Seismic Detection)
 
-  Seismic data filtering model
+  Kalman filter based frequency domain smoothing with thresholding for Seismic Detection on Moon and Mars
 
