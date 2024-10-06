@@ -146,8 +146,9 @@ const PanelMain: React.FC<BoxProps> = (props) => {
           display="flex"
           alignItems="center"
           gap="4"
+          marginBottom={-2}
         >
-          <Image src={logo} alt="SCAMP" boxSize="60px" display="inline-block"/>
+          <Image src={logo} alt="SCAMP" boxSize="70px" display="inline-block"/>
           <Heading as="h1" size="lg">S.C.A.M.P</Heading>
         </Box>
       </Tooltip>
@@ -160,7 +161,10 @@ const PanelMain: React.FC<BoxProps> = (props) => {
       {settings.dataSet === 'custom' ? (
         <>
           <FormLabel>Custom dataset:</FormLabel>
-          <Input disabled placeholder="URL of CSV catalog data (like .../apollo12_catalog_GradeA_final.csv)" size="sm"/>
+          <HStack>
+            <Input disabled placeholder="URL of CSV catalog data (like .../apollo12_catalog_GradeA_final.csv)" size="sm"/>
+            <Button disabled size="sm">Load</Button>
+          </HStack>
         </>
       ) : (
         <>
