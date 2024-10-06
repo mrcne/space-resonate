@@ -11,6 +11,7 @@ const SeismicSettingsContext = createContext<SeismicSettingsContextProps | undef
 export const SeismicSettingsProvider = ({children}: { children: ReactNode }) => {
   const [settings, setSettings] = useState<SeismicSettings>({
     dataSet: 'lunar',
+    dataSource: 'all',
     event: '',
   });
 

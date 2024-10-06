@@ -10,7 +10,9 @@ import {
   StackDivider,
   useRadioGroup,
   VStack,
-  Image
+  Image,
+  Tooltip,
+  FormLabel,
 } from "@chakra-ui/react";
 
 import {useSeismicSettings} from "../../context/seismicSettings.tsx";
@@ -21,15 +23,26 @@ import logo from '../../assets/logo_w.svg'
 
 const PanelMain: React.FC<BoxProps> = (props) => {
   const [value, setValue] = useState('1');
-  const { settings, setSettings } = useSeismicSettings();
+  const {settings, setSettings} = useSeismicSettings();
 
-  const { getRootProps, getRadioProps } = useRadioGroup({
+  const {getRootProps, getRadioProps} = useRadioGroup({
     name: 'framework',
     defaultValue: 'react',
     onChange: (value: SeismicSettings['dataSet']) => {
       setSettings({
         ...settings,
         dataSet: value
+      });
+    },
+  });
+
+  const {getRootProps: getRootPropsSource, getRadioProps: getRadioPropsSource} = useRadioGroup({
+    name: 'framework',
+    defaultValue: 'react',
+    onChange: (value: SeismicSettings['dataSource']) => {
+      setSettings({
+        ...settings,
+        dataSource: value
       });
     },
   });
@@ -121,23 +134,37 @@ const PanelMain: React.FC<BoxProps> = (props) => {
     overflowY="scroll"
   >
     <VStack
-      divider={<StackDivider borderColor='gray.600' />}
+      divider={<StackDivider borderColor='gray.600'/>}
       spacing={4}
       align='stretch'
     >
-      <Box
-        display="flex"
-        alignItems="center"
-        gap="4"
+      <Tooltip
+        label="Seismic Catalogue Analysis and Mapping Platform"
+        hasArrow
       >
-        <Image src={logo} alt="SCAMP" boxSize="60px" display="inline-block" />
-        <Heading as="h1" size="lg">S.C.A.M.P</Heading>
-      </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap="4"
+        >
+          <Image src={logo} alt="SCAMP" boxSize="60px" display="inline-block"/>
+          <Heading as="h1" size="lg">S.C.A.M.P</Heading>
+        </Box>
+      </Tooltip>
       <HStack {...getRootProps()}>
-        <RadioCard key="lunar" {...getRadioProps({ value: 'lunar' })}>Moon</RadioCard>
-        <RadioCard key="mars" {...getRadioProps({ value: 'mars' })}>Mars</RadioCard>
-        <RadioCard key="custom" {...getRadioProps({ value: 'custom' })}>Custom</RadioCard>
+        <RadioCard key="lunar" {...getRadioProps({value: 'lunar'})}>Moon</RadioCard>
+        <RadioCard key="mars" {...getRadioProps({value: 'mars'})}>Mars</RadioCard>
+        <RadioCard key="pi" {...getRadioProps({value: 'pi'})}>RPi</RadioCard>
+        <RadioCard key="custom" {...getRadioProps({value: 'custom'})}>Custom</RadioCard>
       </HStack>
+      <>
+        <FormLabel>Data source:</FormLabel>
+        <HStack {...getRootPropsSource()}>
+          <RadioCard sizeY={1} key="all" {...getRadioPropsSource({value: 'all'})}>All</RadioCard>
+          <RadioCard sizeY={1} key="nasa" {...getRadioPropsSource({value: 'nasa'})}>NASA</RadioCard>
+          <RadioCard sizeY={1} key="resonate" {...getRadioPropsSource({value: 'resonate'})}>RESONATE</RadioCard>
+        </HStack>
+      </>
       <RadioGroup onChange={setValue} value={value}
         size="sm" overflow="hidden" maxHeight="100vh"
       >

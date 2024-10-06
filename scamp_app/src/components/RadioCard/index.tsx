@@ -2,9 +2,15 @@ import {Box, useRadio, UseRadioProps} from "@chakra-ui/react";
 
 type Props = UseRadioProps & {
   children: React.ReactNode,
+  sizeX?: string | number,
+  sizeY?: string | number,
 };
 
-function RadioCard(props: Props) {
+function RadioCard({
+  sizeX = 3,
+  sizeY = 5,
+  ...props
+}: Props) {
   const { getInputProps, getRadioProps } = useRadio(props)
 
   const input = getInputProps()
@@ -27,8 +33,8 @@ function RadioCard(props: Props) {
         _focus={{
           boxShadow: 'outline',
         }}
-        px={5}
-        py={3}
+        px={sizeX}
+        py={sizeY}
       >
         {props.children}
       </Box>
