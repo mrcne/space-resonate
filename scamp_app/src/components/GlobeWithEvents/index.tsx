@@ -19,7 +19,7 @@ const GlobeWithEvents: React.FC<Props> = ({
 
   const globeSrcByType = {
     'lunar': '//unpkg.com/globe.gl@2.27.2/example/moon-landing-sites/lunar_surface.jpg',
-    'mars': './assets/temp_mars_surface.jpg',
+    'mars': './assets/mars_surface.jpg',
     'pi': './assets/pi_image.jpg',
     'custom': '',
   }

@@ -12,7 +12,7 @@ import {
   VStack,
   Image,
   Tooltip,
-  FormLabel,
+  FormLabel, Input,
 } from "@chakra-ui/react";
 
 import {useSeismicSettings} from "../../context/seismicSettings.tsx";
@@ -157,14 +157,21 @@ const PanelMain: React.FC<BoxProps> = (props) => {
         <RadioCard key="pi" {...getRadioProps({value: 'pi'})}>RPi</RadioCard>
         <RadioCard key="custom" {...getRadioProps({value: 'custom'})}>Custom</RadioCard>
       </HStack>
-      <>
-        <FormLabel>Data source:</FormLabel>
-        <HStack {...getRootPropsSource()}>
-          <RadioCard sizeY={1} key="all" {...getRadioPropsSource({value: 'all'})}>All</RadioCard>
-          <RadioCard sizeY={1} key="nasa" {...getRadioPropsSource({value: 'nasa'})}>NASA</RadioCard>
-          <RadioCard sizeY={1} key="resonate" {...getRadioPropsSource({value: 'resonate'})}>RESONATE</RadioCard>
-        </HStack>
-      </>
+      {settings.dataSet === 'custom' ? (
+        <>
+          <FormLabel>Custom dataset:</FormLabel>
+          <Input disabled placeholder="URL of CSV catalog data (like .../apollo12_catalog_GradeA_final.csv)" size="sm"/>
+        </>
+      ) : (
+        <>
+          <FormLabel>Data source:</FormLabel>
+          <HStack {...getRootPropsSource()}>
+            <RadioCard sizeY={1} key="all" {...getRadioPropsSource({value: 'all'})}>All</RadioCard>
+            <RadioCard sizeY={1} key="nasa" {...getRadioPropsSource({value: 'nasa'})}>NASA</RadioCard>
+            <RadioCard sizeY={1} key="resonate" {...getRadioPropsSource({value: 'resonate'})}>RESONATE</RadioCard>
+          </HStack>
+        </>
+      )}
       <RadioGroup onChange={setValue} value={value}
         size="sm" overflow="hidden" maxHeight="100vh"
       >
