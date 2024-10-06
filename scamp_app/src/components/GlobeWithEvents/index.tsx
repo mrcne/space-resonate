@@ -21,7 +21,7 @@ const GlobeWithEvents: React.FC<Props> = ({
     'lunar': '//unpkg.com/globe.gl@2.27.2/example/moon-landing-sites/lunar_surface.jpg',
     'mars': './assets/mars_surface.jpg',
     'pi': './assets/pi_image.jpg',
-    'custom': '',
+    'custom': './assets/moon_face.png',
   }
 
   useEffect(() => {
@@ -34,16 +34,17 @@ const GlobeWithEvents: React.FC<Props> = ({
     [landingSites[currentStation]]
   ), [landingSites, currentStation]);
 
-  if (settings.dataSet === 'pi') {
+  if (settings.dataSet === 'pi' || settings.dataSet === 'custom') {
     return <Box
       display="flex"
       justifyContent="center"
       alignItems="center"
+      backgroundColor="black"
       {...props}
     >
       <Image
-        src={globeSrcByType['pi']}
-        alt="Pi image"
+        src={globeSrcByType[settings.dataSet]}
+        alt={`${settings.dataSet} image`}
         borderRadius="full"
       />
     </Box>
