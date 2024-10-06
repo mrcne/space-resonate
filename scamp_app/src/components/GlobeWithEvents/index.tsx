@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Globe from 'react-globe.gl';
+import {LandingSite} from "../../types/resources.ts";
 
 import {DataSetType} from "../../types/seismicSettings.ts";
 import ResizableContainer from "../ResizeableContainer";
@@ -14,6 +15,20 @@ const GlobeWithEvents: React.FC<Props> = ({
   message,
   ...props
 }) => {
+    const [landingSites, setLandingSites] = useState<Record<string, LandingSite>>({});
+
+    const currentStation = 'apollo-12'
+
+    useEffect(() => {
+      fetch('./resources/stations.json')
+        .then(r =>r.json())
+        .then(setLandingSites);
+    }, []);
+
+  const labelsData = useMemo(() => (
+    [landingSites[currentStation]]
+  ) , [landingSites, currentStation]);
+
   return <ResizableContainer {...props} render={( width, height) => (
     <>
       <h2>{message}</h2>
@@ -22,10 +37,19 @@ const GlobeWithEvents: React.FC<Props> = ({
         width={width}
         height={height}
         rendererConfig={{
-          antialias: false,
-          alpha: false,
+          antialias: true,
+          alpha: true,
         }}
-        showAtmosphere={false}
+        showAtmosphere={true}
+        labelText="label"
+        labelSize={1.7}
+        labelDotRadius={0.4}
+        labelsData={labelsData}
+        labelLabel={(d: any) => `
+          <div><b>${d.label}</b></div>
+          <div>${d.agency} - ${d.program} Program</div>
+          <div>Landing on <i>${new Date(d.date).toLocaleDateString()}</i></div>
+        `}
       />
     </>
   )}/>
